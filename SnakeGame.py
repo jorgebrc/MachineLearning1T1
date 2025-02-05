@@ -102,7 +102,7 @@ def print_line_data(game):
     # Define the filename
     filename = "snake_game_log.csv"
 
-    # Compute non given info to log
+    # Compute non given info to log.
 
 
 
