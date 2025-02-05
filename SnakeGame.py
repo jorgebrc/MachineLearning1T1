@@ -102,16 +102,46 @@ def print_line_data(game):
     # Define the filename
     filename = "snake_game_log.csv"
 
+    header = "snake_pos_x,snake_pos_y,snake_body_length,food_pos_x,food_pos_y,horizontal_distance,vertical_distance,score,body_parts,left_safe,right_safe,up_safe,down_safe\n"
+
+    # Check if the file exists, if not, write the header
+    try:
+        with open(filename, "r") as file:
+            pass
+    except FileNotFoundError:
+        with open(filename, "w") as file:
+            file.write(header)
+
 
     # Calculate distances to food
     horizontal_distance = game.food_pos[0] - game.snake_pos[0]
     vertical_distance = game.food_pos[1] - game.snake_pos[1]
 
+    #Safe moves for x directions
+    left_safe = False
+    right_safe = False
+    up_safe = False
+    down_safe = False
+
+
+    if game.direction != 'RIGHT':
+        left_safe = (game.snake_pos[0] - 10 >= 0) and (
+                    [game.snake_pos[0] - 10, game.snake_pos[1]] not in game.snake_body)
+    if game.direction != 'LEFT':
+        right_safe = (game.snake_pos[0] + 10 < FRAME_SIZE_X) and (
+                    [game.snake_pos[0] + 10, game.snake_pos[1]] not in game.snake_body)
+    if game.direction != 'DOWN':
+        up_safe = (game.snake_pos[1] - 10 >= 0) and ([game.snake_pos[0], game.snake_pos[1] - 10] not in game.snake_body)
+    if game.direction != 'UP':
+        down_safe = (game.snake_pos[1] + 10 < FRAME_SIZE_Y) and (
+                    [game.snake_pos[0], game.snake_pos[1] + 10] not in game.snake_body)
+
+
     # Amount of body parts
     body_parts = len(game.snake_body)
 
     # Data to log
-    data_line = f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},{body_parts}\n"
+    data_line = f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},{body_parts},{left_safe},{right_safe},{up_safe},{down_safe}\n"
 
     # Append data to the file
     with open(filename, "a") as file:
@@ -166,6 +196,8 @@ while True:
     if game.snake_pos[0] == game.food_pos[0] and game.snake_pos[1] == game.food_pos[1]:
         game.score += 100
         game.food_spawn = False
+        # Save Current State
+        print_line_data(game)
     else:
         game.snake_body.pop()
         game.score -= 1
@@ -189,12 +221,18 @@ while True:
     # Game Over conditions
     # Getting out of bounds
     if game.snake_pos[0] < 0 or game.snake_pos[0] > FRAME_SIZE_X-10:
+        # Save Current State
+        print_line_data(game)
         game_over(game)
     if game.snake_pos[1] < 0 or game.snake_pos[1] > FRAME_SIZE_Y-10:
+        # Save Current State
+        print_line_data(game)
         game_over(game)
     # Touching the snake body
     for block in game.snake_body[1:]:
         if game.snake_pos[0] == block[0] and game.snake_pos[1] == block[1]:
+            # Save Current State
+            print_line_data(game)
             game_over(game)
 
     show_score(game, 1, WHITE, 'consolas', 15)
