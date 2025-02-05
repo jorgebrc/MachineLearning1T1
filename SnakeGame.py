@@ -105,8 +105,11 @@ def print_line_data(game):
     horizontal_distance = game.food_pos[0] - game.snake_pos[0]
     vertical_distance = game.food_pos[1] - game.snake_pos[1]
 
+    # Amount of body parts
+    body_parts = len(game.snake_body)
+
     # Data to log
-    data_line = f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score}\n"
+    data_line = f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},{body_parts}\n"
 
     # Append data to the file
     with open(filename, "a") as file:
