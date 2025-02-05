@@ -103,11 +103,12 @@ def print_line_data(game):
     filename = "snake_game_log.csv"
 
     # Compute non given info to log.
-
-
+    # Calculate distances to food
+    horizontal_distance = game.food_pos[0] - game.snake_pos[0]
+    vertical_distance = game.food_pos[1] - game.snake_pos[1]
 
     # Data to log
-    data_line = f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},{game.food_pos[0]},{game.food_pos[1]},{game.score}\n"
+    data_line = f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score}\n"
 
     # Append data to the file
     with open(filename, "a") as file:
