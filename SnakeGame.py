@@ -113,7 +113,7 @@ def get_safe_moves_colums(game):
 
         # Keep moving in this direction until hitting a wall or a body part
         while 0 <= next_x < FRAME_SIZE_X and 0 <= next_y < FRAME_SIZE_Y:
-            if [next_x, next_y] in game.snake_body[1:]:  # Avoid checking head
+            if [next_x, next_y] in game.snake_body[1:]:
                 safe_moves[direction] = False
                 break
 
@@ -175,7 +175,7 @@ def print_line_data(game):
     # Define the filename
     filename = "snake_game_log.csv"
 
-    header = "snake_pos_x,snake_pos_y,snake_body_length,food_pos_x,food_pos_y,horizontal_distance,vertical_distance,score,body_parts,left_safe,right_safe,up_safe,down_safe\n"
+    header = "snake_pos_x,snake_pos_y,snake_body_length,food_pos_x,food_pos_y,horizontal_distance,vertical_distance,score,body_parts,left_safe,right_safe,up_safe,down_safe,fully_safe_LEFT,fully_safe_RIGHT,fully_safe_UP,fully_safe_DOWN\n"
 
     # Check if the file exists, if not, write the header
     try:
@@ -192,13 +192,14 @@ def print_line_data(game):
 
     #Safe moves for x y directions
     safe_moves = get_safe_moves(game)
+    safe_colums = get_safe_moves_colums(game)
 
 
     # Amount of body parts
     body_parts = len(game.snake_body)
 
     # Data to log
-    data_line = f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},{body_parts},{safe_moves['LEFT']},{safe_moves['RIGHT']},{safe_moves['UP']},{safe_moves['DOWN']}\n"
+    data_line = f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},{body_parts},{safe_moves["LEFT"]},{safe_moves["RIGHT"]},{safe_moves["UP"]},{safe_moves["DOWN"]},{safe_colums["LEFT"]},{safe_colums["RIGHT"]},{safe_colums["UP"]},{safe_colums["DOWN"]}\n"
 
     # Append data to the file
     with open(filename, "a") as file:
