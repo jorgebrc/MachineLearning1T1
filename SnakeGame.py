@@ -167,6 +167,8 @@ fps_controller = pygame.time.Clock()
 # Main logic
 game = GameState((FRAME_SIZE_X,FRAME_SIZE_Y))
 while True:
+    # Save Current State
+    print_line_data(game)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -196,8 +198,6 @@ while True:
     if game.snake_pos[0] == game.food_pos[0] and game.snake_pos[1] == game.food_pos[1]:
         game.score += 100
         game.food_spawn = False
-        # Save Current State
-        print_line_data(game)
     else:
         game.snake_body.pop()
         game.score -= 1
@@ -221,18 +221,12 @@ while True:
     # Game Over conditions
     # Getting out of bounds
     if game.snake_pos[0] < 0 or game.snake_pos[0] > FRAME_SIZE_X-10:
-        # Save Current State
-        print_line_data(game)
         game_over(game)
     if game.snake_pos[1] < 0 or game.snake_pos[1] > FRAME_SIZE_Y-10:
-        # Save Current State
-        print_line_data(game)
         game_over(game)
     # Touching the snake body
     for block in game.snake_body[1:]:
         if game.snake_pos[0] == block[0] and game.snake_pos[1] == block[1]:
-            # Save Current State
-            print_line_data(game)
             game_over(game)
 
     show_score(game, 1, WHITE, 'consolas', 15)
@@ -242,5 +236,3 @@ while True:
     fps_controller.tick(DIFFICULTY)
     # PRINTING STATE
     print_state(game)
-    # Save Current State
-    print_line_data(game)
