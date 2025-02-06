@@ -80,12 +80,37 @@ def move_keyboard(game, event):
             change_to = 'RIGHT'
     return change_to
 
+def get_safe_moves(game):
+    # Initialize all directions as False (unsafe)
+    left_safe  = False
+    right_safe = False
+    up_safe    = False
+    down_safe  = False
+
+    # Check possible turns (can't move in the opposite direction)
+    if game.direction != 'RIGHT':  # Can turn left
+        left_safe  = (game.snake_pos[0] - 10 >= 0) and ([game.snake_pos[0] - 10, game.snake_pos[1]] not in game.snake_body)
+    if game.direction != 'LEFT':   # Can turn right
+        right_safe = (game.snake_pos[0] + 10 < FRAME_SIZE_X) and ([game.snake_pos[0] + 10, game.snake_pos[1]] not in game.snake_body)
+    if game.direction != 'DOWN':   # Can turn up
+        up_safe    = (game.snake_pos[1] - 10 >= 0) and ([game.snake_pos[0], game.snake_pos[1] - 10] not in game.snake_body)
+    if game.direction != 'UP':     # Can turn down
+        down_safe  = (game.snake_pos[1] + 10 < FRAME_SIZE_Y) and ([game.snake_pos[0], game.snake_pos[1] + 10] not in game.snake_body)
+
+    return {
+        "LEFT": left_safe,
+        "RIGHT": right_safe,
+        "UP": up_safe,
+        "DOWN": down_safe
+    }
+
 # TODO: IMPLEMENT HERE THE NEW INTELLIGENT METHOD
-def move_tutorial_1(game):
-    '''
-    YOUR CODE HERE
-    '''
-    return 'DOWN'
+"""def move_tutorial_1(game):
+    
+
+
+
+    return"""
 
 # PRINTING DATA FROM GAME STATE
 def print_state(game):
@@ -117,31 +142,15 @@ def print_line_data(game):
     horizontal_distance = game.food_pos[0] - game.snake_pos[0]
     vertical_distance = game.food_pos[1] - game.snake_pos[1]
 
-    #Safe moves for x directions
-    left_safe = False
-    right_safe = False
-    up_safe = False
-    down_safe = False
-
-
-    if game.direction != 'RIGHT':
-        left_safe = (game.snake_pos[0] - 10 >= 0) and (
-                    [game.snake_pos[0] - 10, game.snake_pos[1]] not in game.snake_body)
-    if game.direction != 'LEFT':
-        right_safe = (game.snake_pos[0] + 10 < FRAME_SIZE_X) and (
-                    [game.snake_pos[0] + 10, game.snake_pos[1]] not in game.snake_body)
-    if game.direction != 'DOWN':
-        up_safe = (game.snake_pos[1] - 10 >= 0) and ([game.snake_pos[0], game.snake_pos[1] - 10] not in game.snake_body)
-    if game.direction != 'UP':
-        down_safe = (game.snake_pos[1] + 10 < FRAME_SIZE_Y) and (
-                    [game.snake_pos[0], game.snake_pos[1] + 10] not in game.snake_body)
+    #Safe moves for x y directions
+    safe_moves = get_safe_moves(game)
 
 
     # Amount of body parts
     body_parts = len(game.snake_body)
 
     # Data to log
-    data_line = f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},{body_parts},{left_safe},{right_safe},{up_safe},{down_safe}\n"
+    data_line = f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},{body_parts},{safe_moves['LEFT']},{safe_moves['RIGHT']},{safe_moves['UP']},{safe_moves['DOWN']}\n"
 
     # Append data to the file
     with open(filename, "a") as file:
