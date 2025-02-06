@@ -14,7 +14,7 @@ import pygame, sys, time, random
 # Hard      ->  40
 # Harder    ->  60
 # Impossible->  120
-DIFFICULTY = 120
+DIFFICULTY = 240
 
 # Window size
 FRAME_SIZE_X = 480
@@ -103,31 +103,60 @@ def get_safe_moves(game):
         "DOWN": down_safe
     }
 
+
+def get_safe_moves_colums(game):
+    safe_moves = {"LEFT": True, "RIGHT": True, "UP": True, "DOWN": True}
+
+    # Check for each direction
+    for direction in ["LEFT", "RIGHT", "UP", "DOWN"]:
+        next_x, next_y = game.snake_pos
+
+        # Keep moving in this direction until hitting a wall or a body part
+        while 0 <= next_x < FRAME_SIZE_X and 0 <= next_y < FRAME_SIZE_Y:
+            if [next_x, next_y] in game.snake_body[1:]:  # Avoid checking head
+                safe_moves[direction] = False
+                break
+
+            # Move one step further in the direction
+            if direction == "LEFT":
+                next_x -= 10
+            elif direction == "RIGHT":
+                next_x += 10
+            elif direction == "UP":
+                next_y -= 10
+            elif direction == "DOWN":
+                next_y += 10
+
+    return safe_moves
+
+
 # TODO: IMPLEMENT HERE THE NEW INTELLIGENT METHOD
 def move_tutorial_1(game):
     change_to = game.direction
     safe_moves = get_safe_moves(game)
     horizontal_distance = game.food_pos[0] - game.snake_pos[0]
     vertical_distance = game.food_pos[1] - game.snake_pos[1]
+    safe_colums = get_safe_moves_colums(game)
 
     # Move vertically first because of spawn movement direction of snake
     if vertical_distance > 0 and safe_moves["DOWN"]:
         change_to = "DOWN"
     elif vertical_distance < 0 and safe_moves["UP"]:
         change_to = "UP"
-    elif vertical_distance == 0:  # If aligned in Y-axis, move horizontally
-
-        if horizontal_distance > 0 and safe_moves["RIGHT"]:
-            change_to = "RIGHT"
-        elif horizontal_distance < 0 and safe_moves["LEFT"]:
-            change_to = "LEFT"
-
-    # If preferred move is blocked, pick any safe alternative
+    elif horizontal_distance > 0 and safe_moves["RIGHT"]:
+        change_to = "RIGHT"
+    elif horizontal_distance < 0 and safe_moves["LEFT"]:
+        change_to = "LEFT"
+    # If the chosen move is blocked, look for the safest alternative
     if not safe_moves[change_to]:
-        for direction in ["LEFT", "RIGHT", "UP", "DOWN"]:
-            if safe_moves[direction]:
-                change_to = direction
-                break
+        possible_moves = [d for d in ["LEFT", "RIGHT", "UP", "DOWN"] if safe_moves[d]]
+
+        # Prefer fully safe moves first
+        fully_safe_options = [d for d in possible_moves if safe_colums[d]]
+        if fully_safe_options:
+            change_to = fully_safe_options[0]
+        elif possible_moves:
+            change_to = possible_moves[0]  # If no fully safe move, pick any safe move
 
     return change_to
 
