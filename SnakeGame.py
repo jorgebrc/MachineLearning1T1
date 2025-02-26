@@ -173,7 +173,7 @@ def print_state(game):
 # TODO: IMPLEMENT HERE THE NEW INTELLIGENT METHOD
 def print_line_data(game):
     # Define the filename
-    filename = "snake_game_log.csv"
+    filename = "all_data_snake.arff"
 
     header = "snake_pos_x,snake_pos_y,snake_body_length,food_pos_x,food_pos_y,horizontal_distance,vertical_distance,score,body_parts,left_safe,right_safe,up_safe,down_safe,fully_safe_LEFT,fully_safe_RIGHT,fully_safe_UP,fully_safe_DOWN\n"
 
