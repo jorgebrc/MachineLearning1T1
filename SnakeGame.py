@@ -194,6 +194,7 @@ def print_line_data(game):
 @ATTRIBUTE fully_safe_RIGHT {True, False}
 @ATTRIBUTE fully_safe_UP {True, False}
 @ATTRIBUTE fully_safe_DOWN {True, False}
+@ATTRIBUTE snake_body_coordinates STRING
 @ATTRIBUTE last_direction {LEFT, RIGHT, UP, DOWN}
 
 @DATA
@@ -218,12 +219,16 @@ def print_line_data(game):
     # Amount of body parts
     body_parts = len(game.snake_body)
 
+    #all corninates
+    body_coordinates = ";".join([f"{part[0]}:{part[1]}" for part in game.snake_body])
+
     # Data to log
     data_line = (
         f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},"
         f"{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},"
         f"{body_parts},{safe_moves['LEFT']},{safe_moves['RIGHT']},{safe_moves['UP']},{safe_moves['DOWN']},"
-        f"{safe_colums['LEFT']},{safe_colums['RIGHT']},{safe_colums['UP']},{safe_colums['DOWN']},{game.direction}\n"
+        f"{safe_colums['LEFT']},{safe_colums['RIGHT']},{safe_colums['UP']},{safe_colums['DOWN']},{body_coordinates},"
+        f"\"{game.direction}\"\n"
     )
 
     # Append data to the file
