@@ -14,7 +14,7 @@ import pygame, sys, time, random
 # Hard      ->  40
 # Harder    ->  60
 # Impossible->  120
-DIFFICULTY = 10
+DIFFICULTY = 25
 
 # Window size
 FRAME_SIZE_X = 480
@@ -37,9 +37,11 @@ class GameState:
         self.direction = 'RIGHT'
         self.change_to = self.direction
         self.score = 0
+        self.outcome = "continue"
 
 # Game Over
 def game_over(game):
+    print_line_data(game)
     my_font = pygame.font.SysFont('times new roman', 90)
     game_over_surface = my_font.render('YOU DIED', True, WHITE)
     game_over_rect = game_over_surface.get_rect()
@@ -196,6 +198,7 @@ def print_line_data(game):
 @ATTRIBUTE fully_safe_DOWN {True, False}
 @ATTRIBUTE snake_body_coordinates STRING
 @ATTRIBUTE last_direction {LEFT, RIGHT, UP, DOWN}
+@ATTRIBUTE outcome {continue, gameover}
 
 @DATA
 """
@@ -228,7 +231,7 @@ def print_line_data(game):
         f"{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},"
         f"{body_parts},{safe_moves['LEFT']},{safe_moves['RIGHT']},{safe_moves['UP']},{safe_moves['DOWN']},"
         f"{safe_colums['LEFT']},{safe_colums['RIGHT']},{safe_colums['UP']},{safe_colums['DOWN']},{body_coordinates},"
-        f"\"{game.direction}\"\n"
+        f"\"{game.direction}\",{game.outcome}\n"
     )
 
     # Append data to the file
@@ -309,12 +312,15 @@ while True:
     # Game Over conditions
     # Getting out of bounds
     if game.snake_pos[0] < 0 or game.snake_pos[0] > FRAME_SIZE_X-10:
+        game.outcome = "gameover"
         game_over(game)
     if game.snake_pos[1] < 0 or game.snake_pos[1] > FRAME_SIZE_Y-10:
+        game.outcome = "gameover"
         game_over(game)
     # Touching the snake body
     for block in game.snake_body[1:]:
         if game.snake_pos[0] == block[0] and game.snake_pos[1] == block[1]:
+            game.outcome = "gameover"
             game_over(game)
 
     show_score(game, 1, WHITE, 'consolas', 15)
@@ -324,3 +330,4 @@ while True:
     fps_controller.tick(DIFFICULTY)
     # PRINTING STATE
     print_state(game)
+
