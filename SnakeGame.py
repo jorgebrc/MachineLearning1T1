@@ -173,9 +173,31 @@ def print_state(game):
 # TODO: IMPLEMENT HERE THE NEW INTELLIGENT METHOD
 def print_line_data(game):
     # Define the filename
-    filename = "all_data_snake.arff"
+    filename = "snake_game_log.arff"
 
-    header = "snake_pos_x,snake_pos_y,snake_body_length,food_pos_x,food_pos_y,horizontal_distance,vertical_distance,score,body_parts,left_safe,right_safe,up_safe,down_safe,fully_safe_LEFT,fully_safe_RIGHT,fully_safe_UP,fully_safe_DOWN\n"
+    header = """@RELATION snake_game
+
+@ATTRIBUTE snake_pos_x NUMERIC
+@ATTRIBUTE snake_pos_y NUMERIC
+@ATTRIBUTE snake_body_length NUMERIC
+@ATTRIBUTE food_pos_x NUMERIC
+@ATTRIBUTE food_pos_y NUMERIC
+@ATTRIBUTE horizontal_distance NUMERIC
+@ATTRIBUTE vertical_distance NUMERIC
+@ATTRIBUTE score NUMERIC
+@ATTRIBUTE body_parts NUMERIC
+@ATTRIBUTE left_safe {True, False}
+@ATTRIBUTE right_safe {True, False}
+@ATTRIBUTE up_safe {True, False}
+@ATTRIBUTE down_safe {True, False}
+@ATTRIBUTE fully_safe_LEFT {True, False}
+@ATTRIBUTE fully_safe_RIGHT {True, False}
+@ATTRIBUTE fully_safe_UP {True, False}
+@ATTRIBUTE fully_safe_DOWN {True, False}
+@ATTRIBUTE last_direction {LEFT, RIGHT, UP, DOWN}
+
+@DATA
+"""
 
     # Check if the file exists, if not, write the header
     try:
@@ -185,21 +207,24 @@ def print_line_data(game):
         with open(filename, "w") as file:
             file.write(header)
 
-
     # Calculate distances to food
     horizontal_distance = game.food_pos[0] - game.snake_pos[0]
     vertical_distance = game.food_pos[1] - game.snake_pos[1]
 
-    #Safe moves for x y directions
+    # Safe moves for x, y directions
     safe_moves = get_safe_moves(game)
     safe_colums = get_safe_moves_colums(game)
-
 
     # Amount of body parts
     body_parts = len(game.snake_body)
 
     # Data to log
-    data_line = f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},{body_parts},{safe_moves["LEFT"]},{safe_moves["RIGHT"]},{safe_moves["UP"]},{safe_moves["DOWN"]},{safe_colums["LEFT"]},{safe_colums["RIGHT"]},{safe_colums["UP"]},{safe_colums["DOWN"]}\n"
+    data_line = (
+        f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},"
+        f"{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},"
+        f"{body_parts},{safe_moves['LEFT']},{safe_moves['RIGHT']},{safe_moves['UP']},{safe_moves['DOWN']},"
+        f"{safe_colums['LEFT']},{safe_colums['RIGHT']},{safe_colums['UP']},{safe_colums['DOWN']},{game.last_direction}\n"
+    )
 
     # Append data to the file
     with open(filename, "a") as file:
