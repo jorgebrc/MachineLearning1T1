@@ -261,10 +261,10 @@ while True:
             if event.key == pygame.K_ESCAPE:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
         # CALLING MOVE METHOD
-        #game.direction = move_keyboard(game, event)
+        game.direction = move_keyboard(game, event)
 
     # UNCOMMENT WHEN METHOD IS IMPLEMENTED
-    game.direction = move_tutorial_1(game)
+    #game.direction = move_tutorial_1(game)
 
     # Moving the snake
     if game.direction == 'UP':
