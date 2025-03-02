@@ -196,8 +196,8 @@ def print_line_data(game):
 @ATTRIBUTE fully_safe_RIGHT {True, False}
 @ATTRIBUTE fully_safe_UP {True, False}
 @ATTRIBUTE fully_safe_DOWN {True, False}
-@ATTRIBUTE last_direction {LEFT, RIGHT, UP, DOWN}
-@ATTRIBUTE outcome {continue, gameover}
+@ATTRIBUTE New_direction {LEFT, RIGHT, UP, DOWN}
+
 
 @DATA
 """
@@ -221,8 +221,6 @@ def print_line_data(game):
     # Amount of body parts
     body_parts = len(game.snake_body)
 
-    #all corninates
-    body_coordinates = ";".join([f"{part[0]}:{part[1]}" for part in game.snake_body])
 
     # Data to log
     data_line = (
@@ -230,7 +228,7 @@ def print_line_data(game):
         f"{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},"
         f"{body_parts},{safe_moves['LEFT']},{safe_moves['RIGHT']},{safe_moves['UP']},{safe_moves['DOWN']},"
         f"{safe_colums['LEFT']},{safe_colums['RIGHT']},{safe_colums['UP']},{safe_colums['DOWN']},"
-        f"\"{game.direction}\",{game.outcome}\n"
+        f"\"{game.direction}\"\n"
     )
 
     # Append data to the file
@@ -257,8 +255,7 @@ fps_controller = pygame.time.Clock()
 # Main logic
 game = GameState((FRAME_SIZE_X,FRAME_SIZE_Y))
 while True:
-    # Save Current State
-    print_line_data(game)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -272,6 +269,9 @@ while True:
 
     # UNCOMMENT WHEN METHOD IS IMPLEMENTED
     #game.direction = move_tutorial_1(game)
+
+    # Save Current State
+    print_line_data(game)
 
     # Moving the snake
     if game.direction == 'UP':
@@ -329,4 +329,5 @@ while True:
     fps_controller.tick(DIFFICULTY)
     # PRINTING STATE
     print_state(game)
+
 
