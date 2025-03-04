@@ -105,30 +105,77 @@ def get_safe_moves(game):
         "DOWN": down_safe
     }
 
-# TODO: IMPLEMENT HERE THE NEW INTELLIGENT METHOD
+
+from collections import deque
+
+
+def simulate_move(pos, direction):
+    # Returns the new head position if a move is made in the given direction.
+    x, y = pos
+    if direction == 'UP':
+        return (x, y - 10)
+    if direction == 'DOWN':
+        return (x, y + 10)
+    if direction == 'LEFT':
+        return (x - 10, y)
+    if direction == 'RIGHT':
+        return (x + 10, y)
+    return pos
+
+
+def flood_fill_count(game, start):
+    # Counts how many free cells are reachable from start, treating snake_body as obstacles.
+    grid_w = FRAME_SIZE_X
+    grid_h = FRAME_SIZE_Y
+    cell_size = 10
+    visited = set()
+    queue = deque([start])
+    # Create a set for fast lookup of snake body cells.
+    snake_set = set(tuple(x) for x in game.snake_body)
+    count = 0
+    while queue:
+        pos = queue.popleft()
+        if pos in visited:
+            continue
+        visited.add(pos)
+        count += 1
+        for dx, dy in [(10, 0), (-10, 0), (0, 10), (0, -10)]:
+            new_pos = (pos[0] + dx, pos[1] + dy)
+            if (0 <= new_pos[0] < grid_w and 0 <= new_pos[1] < grid_h and
+                    new_pos not in snake_set and new_pos not in visited):
+                queue.append(new_pos)
+    return count
+
+
 def move_tutorial_1(game):
-    change_to = game.direction
+    """
+    Improved AI: For every safe move from the current head position,
+    simulate the next move and count how many grid cells are reachable using flood-fill.
+    Then choose the move that maximizes the free area.
+    In case of a tie, choose the one that minimizes the Manhattan distance to the food.
+    """
     safe_moves = get_safe_moves(game)
-    horizontal_distance = game.food_pos[0] - game.snake_pos[0]
-    vertical_distance = game.food_pos[1] - game.snake_pos[1]
+    current_head = tuple(game.snake_pos)
 
-    # Move vertically first because of spawn movement direction of snake
-    if vertical_distance > 0 and safe_moves["DOWN"]:
-        change_to = "DOWN"
-    elif vertical_distance < 0 and safe_moves["UP"]:
-        change_to = "UP"
-    elif horizontal_distance > 0 and safe_moves["RIGHT"]:
-        change_to = "RIGHT"
-    elif horizontal_distance < 0 and safe_moves["LEFT"]:
-        change_to = "LEFT"
+    candidates = []
+    for direction, is_safe in safe_moves.items():
+        if is_safe:
+            new_head = simulate_move(current_head, direction)
+            # Evaluate available free area after this move.
+            area = flood_fill_count(game, new_head)
+            # Manhattan distance to food (smaller is better)
+            food_distance = abs(game.food_pos[0] - new_head[0]) + abs(game.food_pos[1] - new_head[1])
+            candidates.append((direction, area, food_distance))
 
-    # If the chosen move is blocked, look for the safest alternative
-    if not safe_moves[change_to]:
-        possible_moves = [d for d in ["LEFT", "RIGHT", "UP", "DOWN"] if safe_moves[d]]
-        if possible_moves:
-            change_to = possible_moves[0]  # Pick any safe move
+    # If no safe move is available, fall back (this will trigger game over soon).
+    if not candidates:
+        return game.direction
 
-    return change_to
+    # Choose the move with the largest flood fill area.
+    # In case of ties, choose the one that minimizes distance to the food.
+    candidates.sort(key=lambda item: (item[1], -item[2]), reverse=True)
+    best_move = candidates[0][0]
+    return best_move
 
 
 # PRINTING DATA FROM GAME STATE
