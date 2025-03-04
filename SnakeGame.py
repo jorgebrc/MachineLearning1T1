@@ -14,7 +14,7 @@ import pygame, sys, time, random
 # Hard      ->  40
 # Harder    ->  60
 # Impossible->  120
-DIFFICULTY = 10
+DIFFICULTY = 440
 
 # Window size
 FRAME_SIZE_X = 480
@@ -105,40 +105,12 @@ def get_safe_moves(game):
         "DOWN": down_safe
     }
 
-
-def get_safe_moves_colums(game):
-    safe_moves = {"LEFT": True, "RIGHT": True, "UP": True, "DOWN": True}
-
-    # Check for each direction
-    for direction in ["LEFT", "RIGHT", "UP", "DOWN"]:
-        next_x, next_y = game.snake_pos
-
-        # Keep moving in this direction until hitting a wall or a body part
-        while 0 <= next_x < FRAME_SIZE_X and 0 <= next_y < FRAME_SIZE_Y:
-            if [next_x, next_y] in game.snake_body[1:]:
-                safe_moves[direction] = False
-                break
-
-            # Move one step further in the direction
-            if direction == "LEFT":
-                next_x -= 10
-            elif direction == "RIGHT":
-                next_x += 10
-            elif direction == "UP":
-                next_y -= 10
-            elif direction == "DOWN":
-                next_y += 10
-
-    return safe_moves
-
-
 # TODO: IMPLEMENT HERE THE NEW INTELLIGENT METHOD
 def move_tutorial_1(game):
     change_to = game.direction
     safe_moves = get_safe_moves(game)
     horizontal_distance = game.food_pos[0] - game.snake_pos[0]
     vertical_distance = game.food_pos[1] - game.snake_pos[1]
-    safe_colums = get_safe_moves_colums(game)
 
     # Move vertically first because of spawn movement direction of snake
     if vertical_distance > 0 and safe_moves["DOWN"]:
@@ -149,18 +121,15 @@ def move_tutorial_1(game):
         change_to = "RIGHT"
     elif horizontal_distance < 0 and safe_moves["LEFT"]:
         change_to = "LEFT"
+
     # If the chosen move is blocked, look for the safest alternative
     if not safe_moves[change_to]:
         possible_moves = [d for d in ["LEFT", "RIGHT", "UP", "DOWN"] if safe_moves[d]]
-
-        # Prefer fully safe moves first
-        fully_safe_options = [d for d in possible_moves if safe_colums[d]]
-        if fully_safe_options:
-            change_to = fully_safe_options[0]
-        elif possible_moves:
-            change_to = possible_moves[0]  # If no fully safe move, pick any safe move
+        if possible_moves:
+            change_to = possible_moves[0]  # Pick any safe move
 
     return change_to
+
 
 # PRINTING DATA FROM GAME STATE
 def print_state(game):
@@ -216,7 +185,6 @@ def print_line_data(game):
 
     # Safe moves for x, y directions
     safe_moves = get_safe_moves(game)
-    safe_colums = get_safe_moves_colums(game)
 
     # Amount of body parts
     body_parts = len(game.snake_body)
@@ -227,7 +195,6 @@ def print_line_data(game):
         f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},"
         f"{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},"
         f"{body_parts},{safe_moves['LEFT']},{safe_moves['RIGHT']},{safe_moves['UP']},{safe_moves['DOWN']},"
-        f"{safe_colums['LEFT']},{safe_colums['RIGHT']},{safe_colums['UP']},{safe_colums['DOWN']},"
         f"\"{game.direction}\"\n"
     )
 
@@ -265,13 +232,14 @@ while True:
             if event.key == pygame.K_ESCAPE:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
         # CALLING MOVE METHOD
-        game.direction = move_keyboard(game, event)
+        #game.direction = move_keyboard(game, event)
 
     # UNCOMMENT WHEN METHOD IS IMPLEMENTED
-    #game.direction = move_tutorial_1(game)
+    game.direction = move_tutorial_1(game)
 
     # Save Current State
     print_line_data(game)
+
 
     # Moving the snake
     if game.direction == 'UP':
