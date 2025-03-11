@@ -105,6 +105,30 @@ def get_safe_moves(game):
         "DOWN": down_safe
     }
 
+
+def future_score(game):
+
+    predicted_score = game.score
+
+    next_pos = game.snake_pos[:]
+    if game.direction == 'UP':
+        next_pos[1] -= 10
+    elif game.direction == 'DOWN':
+        next_pos[1] += 10
+    elif game.direction == 'LEFT':
+        next_pos[0] -= 10
+    elif game.direction == 'RIGHT':
+        next_pos[0] += 10
+
+    if next_pos == game.food_pos:
+        predicted_score += 100
+    else:
+        predicted_score -= 1
+
+    return predicted_score
+
+
+
 # TODO: IMPLEMENT HERE THE NEW INTELLIGENT METHOD
 def move_tutorial_1(game):
     change_to = game.direction
@@ -142,6 +166,9 @@ def print_state(game):
     print("Score:", game.score)
 
 # TODO: IMPLEMENT HERE THE NEW INTELLIGENT METHOD
+def future_score(game):
+
+
 def print_line_data(game):
     # Define the filename
     filename = "snake_game_log.arff"
@@ -166,6 +193,7 @@ def print_line_data(game):
 @ATTRIBUTE fully_safe_UP {True, False}
 @ATTRIBUTE fully_safe_DOWN {True, False}
 @ATTRIBUTE New_direction {LEFT, RIGHT, UP, DOWN}
+@ATTRIBUTE future_score NUMERIC
 
 
 @DATA
@@ -189,13 +217,16 @@ def print_line_data(game):
     # Amount of body parts
     body_parts = len(game.snake_body)
 
+    # Future Score
+    future_score = future_score(game)
+
 
     # Data to log
     data_line = (
         f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},"
         f"{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},"
         f"{body_parts},{safe_moves['LEFT']},{safe_moves['RIGHT']},{safe_moves['UP']},{safe_moves['DOWN']},"
-        f"\"{game.direction}\"\n"
+        f"{game.direction},{future_score}\n"
     )
 
     # Append data to the file
