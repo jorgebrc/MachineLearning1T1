@@ -124,7 +124,6 @@ def future_score(game):
         predicted_score += 100
     else:
         predicted_score -= 1
-
     return predicted_score
 
 
@@ -166,9 +165,6 @@ def print_state(game):
     print("Score:", game.score)
 
 # TODO: IMPLEMENT HERE THE NEW INTELLIGENT METHOD
-def future_score(game):
-
-
 def print_line_data(game):
     # Define the filename
     filename = "snake_game_log.arff"
@@ -218,7 +214,10 @@ def print_line_data(game):
     body_parts = len(game.snake_body)
 
     # Future Score
-    future_score = future_score(game)
+    if game.outcome == "gameover":
+        next_score = 0
+    else:
+        next_score = future_score(game)
 
 
     # Data to log
@@ -226,7 +225,7 @@ def print_line_data(game):
         f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},"
         f"{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},"
         f"{body_parts},{safe_moves['LEFT']},{safe_moves['RIGHT']},{safe_moves['UP']},{safe_moves['DOWN']},"
-        f"{game.direction},{future_score}\n"
+        f"{game.direction},{next_score}\n"
     )
 
     # Append data to the file
