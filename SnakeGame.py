@@ -164,9 +164,27 @@ def print_state(game):
     print("Food X:", game.food_pos[0], ", Food Y:", game.food_pos[1])
     print("Score:", game.score)
 
-# TODO: IMPLEMENT HERE THE NEW INTELLIGENT METHOD
+
+def get_body_distances(game):
+    head_x, head_y = game.snake_pos
+    left_dist = right_dist = up_dist = down_dist = FRAME_SIZE_X  # Default max value
+
+    for segment in game.snake_body[1:]:
+        seg_x, seg_y = segment
+
+        if seg_y == head_y and seg_x < head_x:  # Left
+            left_dist = min(left_dist, head_x - seg_x)
+        elif seg_y == head_y and seg_x > head_x:  # Right
+            right_dist = min(right_dist, seg_x - head_x)
+        elif seg_x == head_x and seg_y < head_y:  # Up
+            up_dist = min(up_dist, head_y - seg_y)
+        elif seg_x == head_x and seg_y > head_y:  # Down
+            down_dist = min(down_dist, seg_y - head_y)
+
+    return left_dist, right_dist, up_dist, down_dist
+
+
 def print_line_data(game):
-    # Define the filename
     filename = "snake_game_log.arff"
 
     header = """@RELATION snake_game
@@ -184,18 +202,16 @@ def print_line_data(game):
 @ATTRIBUTE right_safe {True, False}
 @ATTRIBUTE up_safe {True, False}
 @ATTRIBUTE down_safe {True, False}
-@ATTRIBUTE fully_safe_LEFT {True, False}
-@ATTRIBUTE fully_safe_RIGHT {True, False}
-@ATTRIBUTE fully_safe_UP {True, False}
-@ATTRIBUTE fully_safe_DOWN {True, False}
-@ATTRIBUTE New_direction {LEFT, RIGHT, UP, DOWN}
+@ATTRIBUTE left_distance NUMERIC
+@ATTRIBUTE right_distance NUMERIC
+@ATTRIBUTE up_distance NUMERIC
+@ATTRIBUTE down_distance NUMERIC
+@ATTRIBUTE New_direction NUMERIC
 @ATTRIBUTE future_score NUMERIC
-
 
 @DATA
 """
 
-    # Check if the file exists, if not, write the header
     try:
         with open(filename, "r") as file:
             pass
@@ -203,34 +219,28 @@ def print_line_data(game):
         with open(filename, "w") as file:
             file.write(header)
 
-    # Calculate distances to food
     horizontal_distance = game.food_pos[0] - game.snake_pos[0]
     vertical_distance = game.food_pos[1] - game.snake_pos[1]
-
-    # Safe moves for x, y directions
     safe_moves = get_safe_moves(game)
-
-    # Amount of body parts
     body_parts = len(game.snake_body)
+    left_dist, right_dist, up_dist, down_dist = get_body_distances(game)
 
-    # Future Score
-    if game.outcome == "gameover":
-        next_score = 0
-    else:
-        next_score = future_score(game)
+    next_score = 0 if game.outcome == "gameover" else future_score(game)
 
+    direction_encoding = {"LEFT": 0, "RIGHT": 1, "UP": 2, "DOWN": 3}
+    direction_numeric = direction_encoding.get(game.direction, -1)
 
-    # Data to log
     data_line = (
         f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},"
         f"{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},"
         f"{body_parts},{safe_moves['LEFT']},{safe_moves['RIGHT']},{safe_moves['UP']},{safe_moves['DOWN']},"
-        f"{game.direction},{next_score}\n"
+        f"{left_dist},{right_dist},{up_dist},{down_dist},"
+        f"{direction_numeric},{next_score}\n"
     )
 
-    # Append data to the file
     with open(filename, "a") as file:
         file.write(data_line)
+
 
 # Checks for errors encounteRED
 check_errors = pygame.init()
