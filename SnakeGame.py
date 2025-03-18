@@ -21,7 +21,7 @@ class SnakeGame:
 # Hard      ->  40
 # Harder    ->  60
 # Impossible->  120
-DIFFICULTY = 440
+DIFFICULTY = 10
 
 # Window size
 FRAME_SIZE_X = 480
@@ -279,10 +279,10 @@ while True:
             if event.key == pygame.K_ESCAPE:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
         # CALLING MOVE METHOD
-        #game.direction = move_keyboard(game, event)
+        game.direction = move_keyboard(game, event)
 
     # UNCOMMENT WHEN METHOD IS IMPLEMENTED
-    game.direction = move_tutorial_1(game)
+    #game.direction = move_tutorial_1(game)
 
     # Save Current State
     print_line_data(game)
