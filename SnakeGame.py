@@ -6,6 +6,13 @@ Machine Learning Classes - University Carlos III of Madrid
 """
 
 import pygame, sys, time, random
+from wekaI import Weka
+
+class SnakeGame:
+    def _init_(self):
+        # Initialize the Weka class and start the JVM
+        self.weka = Weka()
+        self.weka.start_jvm()  # Start the Java Virtual Machine
 
 
 # DIFFICULTY settings
