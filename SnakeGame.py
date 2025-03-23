@@ -210,7 +210,7 @@ def move_weka_agent(game, weka):
         int(get_body_distances(game)[3]),          # down_distance (attribute 16)
     ]
     model_path = "j48.model"
-    dataset_path = "snake_game_log2.arff"
+    dataset_path = "snake_game_log3.arff"
     predicted_action = weka.predict(model_path, x, dataset_path)
     action_map = {"0": "LEFT", "1": "RIGHT", "2": "UP", "3": "DOWN"}
     return action_map.get(str(predicted_action), game.direction)

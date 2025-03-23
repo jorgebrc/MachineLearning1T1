@@ -61,7 +61,7 @@ class Weka:
 		inst.dataset = data
 		pred = cls.classify_instance(inst)
 		if data.class_attribute.is_nominal:
-			pred =  data.class_attribute.value(pred)
+			pred =  data.class_attribute.value(int(pred))
 		if(debug): print(("Prediction", pred))
 
 		return pred
