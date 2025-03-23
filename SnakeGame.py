@@ -202,7 +202,7 @@ def move_weka_agent(game, weka):
         int(get_safe_moves(game)["DOWN"]),
         get_body_distances(game)[0], get_body_distances(game)[1],  # Numerical
         get_body_distances(game)[2], get_body_distances(game)[3],  # Numerical
-        future_score(game)  # Numerical
+        future_score(game)
     ]
 
     model_path = "j48.model"
@@ -236,7 +236,7 @@ def print_line_data(game):
 @ATTRIBUTE right_distance numeric
 @ATTRIBUTE up_distance numeric
 @ATTRIBUTE down_distance numeric
-@ATTRIBUTE New_direction numeric
+@ATTRIBUTE New_direction {0,1,2,3}
 @ATTRIBUTE future_score numeric
 
 @DATA
@@ -265,7 +265,7 @@ def print_line_data(game):
         f"{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},"
         f"{body_parts},{int(safe_moves['LEFT'])},{int(safe_moves['RIGHT'])},{int(safe_moves['UP'])},{int(safe_moves['DOWN'])},"
         f"{left_dist},{right_dist},{up_dist},{down_dist},"
-        f"{direction_numeric},{next_score}\n"
+        f"{str(direction_numeric)},{next_score}\n"
     )
 
     with open(filename, "a") as file:
@@ -305,9 +305,9 @@ while True:
         #game.direction = move_keyboard(game, event)
 
     # UNCOMMENT WHEN METHOD IS IMPLEMENTED
-    #game.direction = move_tutorial_1(game)
+    game.direction = move_tutorial_1(game)
     #WEKA AGENTE
-    game.direction = move_weka_agent(game, weka)
+    #game.direction = move_weka_agent(game, weka)
 
     # Save Current State
     print_line_data(game)
