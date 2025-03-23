@@ -209,15 +209,17 @@ def move_weka_agent(game, weka):
         int(get_body_distances(game)[2]),          # up_distance (attribute 15)
         int(get_body_distances(game)[3]),          # down_distance (attribute 16)
     ]
-    model_path = "j48.model"
-    dataset_path = "snake_game_log3.arff"
+    model_path = "ibk.model"
+    dataset_path = "snake_game_log2.arff"
+    print(x)
     predicted_action = weka.predict(model_path, x, dataset_path)
+    print(predicted_action)
     action_map = {"0": "LEFT", "1": "RIGHT", "2": "UP", "3": "DOWN"}
     return action_map.get(str(predicted_action), game.direction)
 
 
 def print_line_data(game):
-    filename = "snake_game_log2.arff"
+    filename = "snake_game_log4.arff"
 
     header = """@RELATION snake_game
 
@@ -238,7 +240,6 @@ def print_line_data(game):
 @ATTRIBUTE up_distance numeric
 @ATTRIBUTE down_distance numeric
 @attribute New_direction {'0','1','2','3'}
-@ATTRIBUTE future_score numeric
 
 @DATA
 """
@@ -266,7 +267,7 @@ def print_line_data(game):
         f"{int(game.food_pos[0])},{int(game.food_pos[1])},{int(horizontal_distance)},{int(vertical_distance)},{int(game.score)},"
         f"{int(safe_moves['LEFT'])},{int(safe_moves['RIGHT'])},{int(safe_moves['UP'])},{int(safe_moves['DOWN'])},"
         f"{int(left_dist)},{int(right_dist)},{int(up_dist)},{int(down_dist)},"
-        f"{str(direction_numeric)},{int(next_score)}\n"
+        f"{str(direction_numeric)}\n"
     )
 
     with open(filename, "a") as file:
@@ -307,11 +308,12 @@ while True:
 
     # UNCOMMENT WHEN METHOD IS IMPLEMENTED
     #game.direction = move_tutorial_1(game)
-    #WEKA AGENTE
-    game.direction = move_weka_agent(game, weka)
+
 
     # Save Current State
     print_line_data(game)
+    # WEKA AGENTE
+    game.direction = move_weka_agent(game, weka)
 
 
     # Moving the snake
