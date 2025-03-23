@@ -196,10 +196,10 @@ def move_weka_agent(game, weka):
         game.food_pos[0], game.food_pos[1], game.food_pos[0] - game.snake_pos[0],  # Numerical
                                             game.food_pos[1] - game.snake_pos[1], game.score, len(game.snake_body),
         # Numerical
-        str(get_safe_moves(game)["LEFT"]),
-        str(get_safe_moves(game)["RIGHT"]),
-        str(get_safe_moves(game)["UP"]),
-        str(get_safe_moves(game)["DOWN"]),
+        int(get_safe_moves(game)["LEFT"]),
+        int(get_safe_moves(game)["RIGHT"]),
+        int(get_safe_moves(game)["UP"]),
+        int(get_safe_moves(game)["DOWN"]),
         get_body_distances(game)[0], get_body_distances(game)[1],  # Numerical
         get_body_distances(game)[2], get_body_distances(game)[3],  # Numerical
         future_score(game)  # Numerical
@@ -305,9 +305,9 @@ while True:
         #game.direction = move_keyboard(game, event)
 
     # UNCOMMENT WHEN METHOD IS IMPLEMENTED
-    game.direction = move_tutorial_1(game)
+    #game.direction = move_tutorial_1(game)
     #WEKA AGENTE
-    #game.direction = move_weka_agent(game, weka)
+    game.direction = move_weka_agent(game, weka)
 
     # Save Current State
     print_line_data(game)
