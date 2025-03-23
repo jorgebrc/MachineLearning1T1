@@ -303,6 +303,7 @@ while True:
 
     # UNCOMMENT WHEN METHOD IS IMPLEMENTED
     #game.direction = move_tutorial_1(game)
+    #WEKA AGENTE
     #game.direction = move_weka_agent(game, weka)
 
 
