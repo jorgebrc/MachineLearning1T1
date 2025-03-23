@@ -209,8 +209,8 @@ def move_weka_agent(game, weka):
         int(get_body_distances(game)[2]),          # up_distance (attribute 15)
         int(get_body_distances(game)[3]),          # down_distance (attribute 16)
     ]
-    model_path = "ibk.model"
-    dataset_path = "snake_game_log2.arff"
+    model_path = "load2.model"
+    dataset_path = "snake_game_log4.arff"
     print(x)
     predicted_action = weka.predict(model_path, x, dataset_path)
     print(predicted_action)
@@ -219,7 +219,7 @@ def move_weka_agent(game, weka):
 
 
 def print_line_data(game):
-    filename = "snake_game_log4.arff"
+    filename = "snake_game_log2.arff"
 
     header = """@RELATION snake_game
 
@@ -309,12 +309,13 @@ while True:
 
     # UNCOMMENT WHEN METHOD IS IMPLEMENTED
     #game.direction = move_tutorial_1(game)
+    # WEKA AGENTE
+    game.direction = move_weka_agent(game, weka)
 
 
     # Save Current State
     print_line_data(game)
-    # WEKA AGENTE
-    game.direction = move_weka_agent(game, weka)
+
 
 
     # Moving the snake
