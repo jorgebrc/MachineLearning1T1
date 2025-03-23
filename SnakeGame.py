@@ -192,28 +192,28 @@ def get_body_distances(game):
 
 def move_weka_agent(game, weka):
     x = [
-        game.snake_pos[0],
-        game.snake_pos[1],
-        len(game.snake_body),  # snake_body_length (attribute 3)
-        game.food_pos[0],
-        game.food_pos[1],
-        game.food_pos[0] - game.snake_pos[0],  # horizontal_distance
-        game.food_pos[1] - game.snake_pos[1],  # vertical_distance
-        game.score,  # score (attribute 8)
+        int(game.snake_pos[0]),
+        int(game.snake_pos[1]),
+        int(len(game.snake_body)),  # snake_body_length (attribute 3)
+        int(game.food_pos[0]),
+        int(game.food_pos[1]),
+        int(game.food_pos[0] - game.snake_pos[0]),  # horizontal_distance
+        int(game.food_pos[1] - game.snake_pos[1]),  # vertical_distance
+        int(game.score),  # score (attribute 8)
         int(get_safe_moves(game)["LEFT"]),    # left_safe (attribute 9)
         int(get_safe_moves(game)["RIGHT"]),   # right_safe (attribute 10)
         int(get_safe_moves(game)["UP"]),      # up_safe (attribute 11)
         int(get_safe_moves(game)["DOWN"]),    # down_safe (attribute 12)
-        get_body_distances(game)[0],          # left_distance (attribute 13)
-        get_body_distances(game)[1],          # right_distance (attribute 14)
-        get_body_distances(game)[2],          # up_distance (attribute 15)
-        get_body_distances(game)[3],          # down_distance (attribute 16)
+        int(get_body_distances(game)[0]),          # left_distance (attribute 13)
+        int(get_body_distances(game)[1]),          # right_distance (attribute 14)
+        int(get_body_distances(game)[2]),          # up_distance (attribute 15)
+        int(get_body_distances(game)[3]),          # down_distance (attribute 16)
     ]
     model_path = "j48.model"
-    dataset_path = "snake_game_log_data_training1.arff"
+    dataset_path = "snake_game_log2.arff"
     predicted_action = weka.predict(model_path, x, dataset_path)
-    action_map = {0: "LEFT", 1: "RIGHT", 2: "UP", 3: "DOWN"}
-    return action_map.get(predicted_action, game.direction)
+    action_map = {"0": "LEFT", "1": "RIGHT", "2": "UP", "3": "DOWN"}
+    return action_map.get(str(predicted_action), game.direction)
 
 
 def print_line_data(game):
@@ -237,7 +237,7 @@ def print_line_data(game):
 @ATTRIBUTE right_distance numeric
 @ATTRIBUTE up_distance numeric
 @ATTRIBUTE down_distance numeric
-@ATTRIBUTE New_direction {0,1,2,3}
+@attribute New_direction {'0','1','2','3'}
 @ATTRIBUTE future_score numeric
 
 @DATA
@@ -262,11 +262,11 @@ def print_line_data(game):
     direction_numeric = direction_encoding.get(game.direction, -1)
 
     data_line = (
-        f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},"
-        f"{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},"
+        f"{int(game.snake_pos[0])},{int(game.snake_pos[1])},{int(len(game.snake_body))},"
+        f"{int(game.food_pos[0])},{int(game.food_pos[1])},{int(horizontal_distance)},{int(vertical_distance)},{int(game.score)},"
         f"{int(safe_moves['LEFT'])},{int(safe_moves['RIGHT'])},{int(safe_moves['UP'])},{int(safe_moves['DOWN'])},"
-        f"{left_dist},{right_dist},{up_dist},{down_dist},"
-        f"{str(direction_numeric)},{next_score}\n"
+        f"{int(left_dist)},{int(right_dist)},{int(up_dist)},{int(down_dist)},"
+        f"{str(direction_numeric)},{int(next_score)}\n"
     )
 
     with open(filename, "a") as file:
