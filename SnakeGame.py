@@ -8,11 +8,9 @@ Machine Learning Classes - University Carlos III of Madrid
 import pygame, sys, time, random
 from wekaI import Weka
 
-class SnakeGame:
-    def __init__(self):
-        # Initialize the Weka class and start the JVM
-        self.weka = Weka()
-        self.weka.start_jvm()  # Start the Java Virtual Machine
+# Initialize the Weka instance
+weka = Weka()
+weka.start_jvm()
 
 
 # DIFFICULTY settings
@@ -58,6 +56,7 @@ def game_over(game):
     show_score(game, 0, WHITE, 'times', 20)
     pygame.display.flip()
     time.sleep(3)
+    weka_instance.stop_jvm()
     pygame.quit()
     sys.exit()
 
@@ -195,17 +194,16 @@ def move_weka_agent(game, weka):
     x = [
         game.snake_pos[0], game.snake_pos[1], len(game.snake_body),
         game.food_pos[0], game.food_pos[1], game.food_pos[0] - game.snake_pos[0],
-                                            game.food_pos[1] - game.snake_pos[1], game.score, len(game.snake_body),
+        game.food_pos[1] - game.snake_pos[1], game.score, len(game.snake_body),
         *get_safe_moves(game).values(),
         *get_body_distances(game),
         future_score(game)
     ]
 
-
     model_path = "j48.model"
     dataset_path = "snake_game_log_data_training1.arff"
-    predicted_action = weka.predict(model_path, x, dataset_path)
 
+    predicted_action = weka.predict(model_path, x, dataset_path)
 
     action_map = {0: "LEFT", 1: "RIGHT", 2: "UP", 3: "DOWN"}
     return action_map.get(predicted_action, game.direction)
@@ -304,8 +302,7 @@ while True:
     # UNCOMMENT WHEN METHOD IS IMPLEMENTED
     #game.direction = move_tutorial_1(game)
     #WEKA AGENTE
-    game.direction = move_weka_agent(game, Weka)
-
+    game.direction = move_weka_agent(game, weka)
 
     # Save Current State
     print_line_data(game)
