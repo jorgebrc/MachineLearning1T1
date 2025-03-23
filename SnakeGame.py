@@ -56,7 +56,7 @@ def game_over(game):
     show_score(game, 0, WHITE, 'times', 20)
     pygame.display.flip()
     time.sleep(3)
-    weka_instance.stop_jvm()
+    weka.stop_jvm()
     pygame.quit()
     sys.exit()
 
@@ -192,12 +192,17 @@ def get_body_distances(game):
 
 def move_weka_agent(game, weka):
     x = [
-        game.snake_pos[0], game.snake_pos[1], len(game.snake_body),
-        game.food_pos[0], game.food_pos[1], game.food_pos[0] - game.snake_pos[0],
-        game.food_pos[1] - game.snake_pos[1], game.score, len(game.snake_body),
-        *get_safe_moves(game).values(),
-        *get_body_distances(game),
-        future_score(game)
+        game.snake_pos[0], game.snake_pos[1], len(game.snake_body),  # Numerical
+        game.food_pos[0], game.food_pos[1], game.food_pos[0] - game.snake_pos[0],  # Numerical
+                                            game.food_pos[1] - game.snake_pos[1], game.score, len(game.snake_body),
+        # Numerical
+        str(get_safe_moves(game)["LEFT"]),
+        str(get_safe_moves(game)["RIGHT"]),
+        str(get_safe_moves(game)["UP"]),
+        str(get_safe_moves(game)["DOWN"]),
+        get_body_distances(game)[0], get_body_distances(game)[1],  # Numerical
+        get_body_distances(game)[2], get_body_distances(game)[3],  # Numerical
+        future_score(game)  # Numerical
     ]
 
     model_path = "j48.model"
@@ -223,10 +228,10 @@ def print_line_data(game):
 @ATTRIBUTE vertical_distance NUMERIC
 @ATTRIBUTE score NUMERIC
 @ATTRIBUTE body_parts NUMERIC
-@ATTRIBUTE left_safe {True, False}
-@ATTRIBUTE right_safe {True, False}
-@ATTRIBUTE up_safe {True, False}
-@ATTRIBUTE down_safe {True, False}
+@ATTRIBUTE left_safe NUMERIC
+@ATTRIBUTE right_safe NUMERIC
+@ATTRIBUTE up_safe NUMERIC
+@ATTRIBUTE down_safe NUMERIC
 @ATTRIBUTE left_distance NUMERIC
 @ATTRIBUTE right_distance NUMERIC
 @ATTRIBUTE up_distance NUMERIC
@@ -258,7 +263,7 @@ def print_line_data(game):
     data_line = (
         f"{game.snake_pos[0]},{game.snake_pos[1]},{len(game.snake_body)},"
         f"{game.food_pos[0]},{game.food_pos[1]},{horizontal_distance},{vertical_distance},{game.score},"
-        f"{body_parts},{safe_moves['LEFT']},{safe_moves['RIGHT']},{safe_moves['UP']},{safe_moves['DOWN']},"
+        f"{body_parts},{int(safe_moves['LEFT'])},{int(safe_moves['RIGHT'])},{int(safe_moves['UP'])},{int(safe_moves['DOWN'])},"
         f"{left_dist},{right_dist},{up_dist},{down_dist},"
         f"{direction_numeric},{next_score}\n"
     )
