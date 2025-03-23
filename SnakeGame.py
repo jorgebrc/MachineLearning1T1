@@ -202,8 +202,8 @@ def move_weka_agent(game, weka):
     ]
 
 
-    model_path = "./j48.model"
-    dataset_path = "./training_set.arff"
+    model_path = "j48.model"
+    dataset_path = "snake_game_log_data_training1.arff"
     predicted_action = weka.predict(model_path, x, dataset_path)
 
 
