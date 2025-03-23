@@ -9,7 +9,7 @@ import pygame, sys, time, random
 from wekaI import Weka
 
 class SnakeGame:
-    def _init_(self):
+    def __init__(self):
         # Initialize the Weka class and start the JVM
         self.weka = Weka()
         self.weka.start_jvm()  # Start the Java Virtual Machine
@@ -191,6 +191,26 @@ def get_body_distances(game):
     return left_dist, right_dist, up_dist, down_dist
 
 
+def move_weka_agent(game, weka):
+    x = [
+        game.snake_pos[0], game.snake_pos[1], len(game.snake_body),
+        game.food_pos[0], game.food_pos[1], game.food_pos[0] - game.snake_pos[0],
+                                            game.food_pos[1] - game.snake_pos[1], game.score, len(game.snake_body),
+        *get_safe_moves(game).values(),
+        *get_body_distances(game),
+        future_score(game)
+    ]
+
+
+    model_path = "./j48.model"
+    dataset_path = "./training_set.arff"
+    predicted_action = weka.predict(model_path, x, dataset_path)
+
+
+    action_map = {0: "LEFT", 1: "RIGHT", 2: "UP", 3: "DOWN"}
+    return action_map.get(predicted_action, game.direction)
+
+
 def print_line_data(game):
     filename = "snake_game_log.arff"
 
@@ -283,6 +303,8 @@ while True:
 
     # UNCOMMENT WHEN METHOD IS IMPLEMENTED
     #game.direction = move_tutorial_1(game)
+    #game.direction = move_weka_agent(game, weka)
+
 
     # Save Current State
     print_line_data(game)
