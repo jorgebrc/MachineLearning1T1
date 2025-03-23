@@ -297,6 +297,7 @@ while True:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            weka.stop_jvm()
             pygame.quit()
             sys.exit()
         if event.type == pygame.KEYDOWN:
