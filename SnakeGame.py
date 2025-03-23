@@ -215,7 +215,7 @@ def move_weka_agent(game, weka):
 
 
 def print_line_data(game):
-    filename = "snake_game_log.arff"
+    filename = "snake_game_log2.arff"
 
     header = """@RELATION snake_game
 
@@ -305,9 +305,9 @@ while True:
         #game.direction = move_keyboard(game, event)
 
     # UNCOMMENT WHEN METHOD IS IMPLEMENTED
-    #game.direction = move_tutorial_1(game)
+    game.direction = move_tutorial_1(game)
     #WEKA AGENTE
-    game.direction = move_weka_agent(game, weka)
+    #game.direction = move_weka_agent(game, weka)
 
     # Save Current State
     print_line_data(game)
