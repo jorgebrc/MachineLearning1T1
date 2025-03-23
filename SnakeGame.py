@@ -219,25 +219,25 @@ def print_line_data(game):
 
     header = """@RELATION snake_game
 
-@ATTRIBUTE snake_pos_x NUMERIC
-@ATTRIBUTE snake_pos_y NUMERIC
-@ATTRIBUTE snake_body_length NUMERIC
-@ATTRIBUTE food_pos_x NUMERIC
-@ATTRIBUTE food_pos_y NUMERIC
-@ATTRIBUTE horizontal_distance NUMERIC
-@ATTRIBUTE vertical_distance NUMERIC
-@ATTRIBUTE score NUMERIC
-@ATTRIBUTE body_parts NUMERIC
-@ATTRIBUTE left_safe NUMERIC
-@ATTRIBUTE right_safe NUMERIC
-@ATTRIBUTE up_safe NUMERIC
-@ATTRIBUTE down_safe NUMERIC
-@ATTRIBUTE left_distance NUMERIC
-@ATTRIBUTE right_distance NUMERIC
-@ATTRIBUTE up_distance NUMERIC
-@ATTRIBUTE down_distance NUMERIC
-@ATTRIBUTE New_direction NUMERIC
-@ATTRIBUTE future_score NUMERIC
+@ATTRIBUTE snake_pos_x numeric
+@ATTRIBUTE snake_pos_y numeric
+@ATTRIBUTE snake_body_length numeric
+@ATTRIBUTE food_pos_x numeric
+@ATTRIBUTE food_pos_y numeric
+@ATTRIBUTE horizontal_distance numeric
+@ATTRIBUTE vertical_distance numeric
+@ATTRIBUTE score numeric
+@ATTRIBUTE body_parts numeric
+@ATTRIBUTE left_safe numeric
+@ATTRIBUTE right_safe numeric
+@ATTRIBUTE up_safe numeric
+@ATTRIBUTE down_safe numeric
+@ATTRIBUTE left_distance numeric
+@ATTRIBUTE right_distance numeric
+@ATTRIBUTE up_distance numeric
+@ATTRIBUTE down_distance numeric
+@ATTRIBUTE New_direction numeric
+@ATTRIBUTE future_score numeric
 
 @DATA
 """
