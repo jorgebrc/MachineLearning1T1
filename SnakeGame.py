@@ -191,6 +191,16 @@ def get_body_distances(game):
 
 
 def move_weka_agent(game, weka):
+    head_x, head_y = game.snake[0]
+    food_x, food_y = game.food
+
+    # Calculate the new attributes
+    food_in_row = 1 if head_y == food_y else 0
+    food_in_col = 1 if head_x == food_x else 0
+    food_in_up = 1 if food_y < head_y else 0
+    food_in_down = 1 if food_y > head_y else 0
+    food_in_left = 1 if food_x < head_x else 0
+    food_in_right = 1 if food_x > head_x else 0
     x = [
         int(game.snake_pos[0]),
         int(game.snake_pos[1]),
@@ -200,14 +210,20 @@ def move_weka_agent(game, weka):
         int(game.food_pos[0] - game.snake_pos[0]),  # horizontal_distance
         int(game.food_pos[1] - game.snake_pos[1]),  # vertical_distance
         int(game.score),  # score (attribute 8)
-        str(get_safe_moves(game)["LEFT"]),    # left_safe (attribute 9)
-        str(get_safe_moves(game)["RIGHT"]),   # right_safe (attribute 10)
-        str(get_safe_moves(game)["UP"]),      # up_safe (attribute 11)
-        str(get_safe_moves(game)["DOWN"]),    # down_safe (attribute 12)
+        int(get_safe_moves(game)["LEFT"]),    # left_safe (attribute 9)
+        int(get_safe_moves(game)["RIGHT"]),   # right_safe (attribute 10)
+        int(get_safe_moves(game)["UP"]),      # up_safe (attribute 11)
+        int(get_safe_moves(game)["DOWN"]),    # down_safe (attribute 12)
         int(get_body_distances(game)[0]),          # left_distance (attribute 13)
         int(get_body_distances(game)[1]),          # right_distance (attribute 14)
         int(get_body_distances(game)[2]),          # up_distance (attribute 15)
         int(get_body_distances(game)[3]),          # down_distance (attribute 16)
+        int(food_in_row),                          # food in the same row (attribute 17)
+        int(food_in_col),                          # food in the same col (attribute 18)
+        int(food_in_up),                           # food in up direction (attribute 19)
+        int(food_in_down),                         # food in down direction (attribute 20)
+        int(food_in_left),                         # food in left direction (attribute 21)
+        int(food_in_right)                         # food in right direction (attribute 22)
     ]
     model_path = "j48.model"
     dataset_path = "snake_game_log_data_training.arff"
