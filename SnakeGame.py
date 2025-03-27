@@ -200,17 +200,17 @@ def move_weka_agent(game, weka):
         int(game.food_pos[0] - game.snake_pos[0]),  # horizontal_distance
         int(game.food_pos[1] - game.snake_pos[1]),  # vertical_distance
         int(game.score),  # score (attribute 8)
-        int(get_safe_moves(game)["LEFT"]),    # left_safe (attribute 9)
-        int(get_safe_moves(game)["RIGHT"]),   # right_safe (attribute 10)
-        int(get_safe_moves(game)["UP"]),      # up_safe (attribute 11)
-        int(get_safe_moves(game)["DOWN"]),    # down_safe (attribute 12)
+        str(get_safe_moves(game)["LEFT"]),    # left_safe (attribute 9)
+        str(get_safe_moves(game)["RIGHT"]),   # right_safe (attribute 10)
+        str(get_safe_moves(game)["UP"]),      # up_safe (attribute 11)
+        str(get_safe_moves(game)["DOWN"]),    # down_safe (attribute 12)
         int(get_body_distances(game)[0]),          # left_distance (attribute 13)
         int(get_body_distances(game)[1]),          # right_distance (attribute 14)
         int(get_body_distances(game)[2]),          # up_distance (attribute 15)
         int(get_body_distances(game)[3]),          # down_distance (attribute 16)
     ]
-    model_path = "load2.model"
-    dataset_path = "snake_game_log4.arff"
+    model_path = "j48.model"
+    dataset_path = "snake_game_log_data_training.arff"
     print(x)
     predicted_action = weka.predict(model_path, x, dataset_path)
     print(predicted_action)
@@ -239,6 +239,12 @@ def print_line_data(game):
 @ATTRIBUTE right_distance numeric
 @ATTRIBUTE up_distance numeric
 @ATTRIBUTE down_distance numeric
+@ATTRIBUTE food_in_row numeric
+@ATTRIBUTE food_in_col numeric
+@ATTRIBUTE food_in_up numeric
+@ATTRIBUTE food_in_down numeric
+@ATTRIBUTE food_in_left numeric
+@ATTRIBUTE food_in_right numeric
 @attribute New_direction {'0','1','2','3'}
 
 @DATA
@@ -262,11 +268,25 @@ def print_line_data(game):
     direction_encoding = {"LEFT": 0, "RIGHT": 1, "UP": 2, "DOWN": 3}
     direction_numeric = direction_encoding.get(game.direction, -1)
 
+    food_x, food_y = game.food_position
+    head_x, head_y = game.snake[0]
+
+    # Compute new binary variables
+    move_up = 1 if head_y > food_y else 0
+    move_down = 1 if head_y < food_y else 0
+    move_left = 1 if head_x > food_x else 0
+    move_right = 1 if head_x < food_x else 0
+
+    same_col_moving = 1 if head_x == food_x and move_up or move_down else 0
+    same_row_moving = 1 if head_y == food_y and move_left or move_right else 0
+
     data_line = (
         f"{int(game.snake_pos[0])},{int(game.snake_pos[1])},{int(len(game.snake_body))},"
         f"{int(game.food_pos[0])},{int(game.food_pos[1])},{int(horizontal_distance)},{int(vertical_distance)},{int(game.score)},"
         f"{int(safe_moves['LEFT'])},{int(safe_moves['RIGHT'])},{int(safe_moves['UP'])},{int(safe_moves['DOWN'])},"
         f"{int(left_dist)},{int(right_dist)},{int(up_dist)},{int(down_dist)},"
+        f"{int(same_row_moving)},{int(same_col_moving)},"
+        f"{int(move_up)},{int(move_down)},{int(move_left)},{int(move_right)},"
         f"{str(direction_numeric)}\n"
     )
 
