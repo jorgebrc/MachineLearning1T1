@@ -191,8 +191,8 @@ def get_body_distances(game):
 
 
 def move_weka_agent(game, weka):
-    head_x, head_y = game.snake[0]
-    food_x, food_y = game.food
+    food_x, food_y = game.food_pos
+    head_x, head_y = game.snake_pos
 
     # Calculate the new attributes
     food_in_row = 1 if head_y == food_y else 0
@@ -225,17 +225,17 @@ def move_weka_agent(game, weka):
         int(food_in_left),                         # food in left direction (attribute 21)
         int(food_in_right)                         # food in right direction (attribute 22)
     ]
-    model_path = "j48.model"
-    dataset_path = "snake_game_log_data_training.arff"
-    print(x)
+    model_path = "RT7.model"
+    dataset_path = "snake_game_log_hand.arff"
     predicted_action = weka.predict(model_path, x, dataset_path)
+    print(x)
     print(predicted_action)
     action_map = {"0": "LEFT", "1": "RIGHT", "2": "UP", "3": "DOWN"}
     return action_map.get(str(predicted_action), game.direction)
 
 
 def print_line_data(game):
-    filename = "snake_game_log2.arff"
+    filename = "snake_game_log_weka.arff"
 
     header = """@RELATION snake_game
 
@@ -284,8 +284,8 @@ def print_line_data(game):
     direction_encoding = {"LEFT": 0, "RIGHT": 1, "UP": 2, "DOWN": 3}
     direction_numeric = direction_encoding.get(game.direction, -1)
 
-    food_x, food_y = game.food_position
-    head_x, head_y = game.snake[0]
+    food_x, food_y = game.food_pos
+    head_x, head_y = game.snake_pos
 
     # Compute new binary variables
     move_up = 1 if head_y > food_y else 0
